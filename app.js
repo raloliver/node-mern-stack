@@ -1,7 +1,8 @@
 const express = require('express')
 const app = express()
 const mongoose = require('mongoose')
-const PORT = process.env.PORT | 5000
+const env = require('./.env.local')
+const PORT = env.PORT || 5000
 
 /**
  * MODELS
@@ -10,12 +11,24 @@ const PORT = process.env.PORT | 5000
 require('./models/User')
 mongoose.model("User")
 
+/**
+ * MIDDLEWARES
+ */
+
+app.use(express.json())
+app.use(require('./routes/auth'))
+
+mongoose.connect(env.mongoDB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+
+mongoose.connection.on('connected', () => console.log('db is online'))
+mongoose.connection.on('error', (err) => console.error('error on db: ', err))
+
 const connectDB = async (operations, res) => {
     try {
-        const connect = await mongoose.connect(process.env.mongoDB_URI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        })
+
         const db = connect.on('connected', () => {
             console.log('connected on mongo atlas')
         });
@@ -28,30 +41,6 @@ const connectDB = async (operations, res) => {
     }
 };
 
-
-const middleware = (req, res, next) => {
-    console.log('middleware')
-    next()
-}
-
-/**
- * apply for all requests, app.use()
- */
-// app.use(middleware)
-
 app.listen(PORT, () => {
     console.warn('Server on 5000')
-})
-
-app.get('/', async (req, res) => {
-    connectDB(
-        async (db) => {
-            res.status(200).send('index')
-        },
-        res
-    );
-})
-
-app.get('/about', middleware, (req, res) => {
-    res.status(200).send('about')
 })
