@@ -2,8 +2,9 @@
   "name": "node-mern-stack",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
+    "start": "npx nodemon --exec node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
