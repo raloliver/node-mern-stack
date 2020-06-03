@@ -22,7 +22,7 @@ app.use(require('./routes/auth'))
  * DATABASE
  */
 
-mongoose.connect(env.mongoDB_URI, {
+mongoose.connect(env.DB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 })
