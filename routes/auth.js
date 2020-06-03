@@ -6,8 +6,13 @@ router.get('/', (req, res) => {
 })
 
 router.post('/signup', (req, res, next) => {
-    console.log(req.body)
-    next()
+    const { name, email, password } = req.body
+
+    if (!name || !email || !password) {
+        res.status(422).json({ error: "Please, fill all fields!" })
+    }
+
+    res.status(200).json({ message: "Account is created!" })
 })
 
 module.exports = router
