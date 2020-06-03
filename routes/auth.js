@@ -4,9 +4,10 @@ const env = require('./../.env.local')
 const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const auth = require('../middlewares/auth')
 const User = mongoose.model('User')
 
-router.get('/', (req, res) => {
+router.get('/auth', auth, (req, res) => {
     res.send('index')
 })
 
@@ -57,6 +58,7 @@ router.post('/signin', (req, res) => {
                 .then(isMatch => {
                     if (isMatch) {
                         // res.status(200).json({ message: 'You are logged in.' })
+                        // #TODO: it is safe to add id from db to a token?
                         const token = jwt.sign({ _id: currentUser._id }, env.SECRET)
                         res.status(200).json({ message: 'You are logged in.', token })
                     } else {
