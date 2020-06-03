@@ -7,12 +7,19 @@ const middleware = (req, res, next) => {
     next()
 }
 
-app.use(middleware)
+/**
+ * apply for all requests, app.use()
+ */
+// app.use(middleware)
 
 app.listen(PORT, () => {
     console.warn('Server on 5000')
 })
 
 app.get('/', (req, res) => {
-    res.status(200).send('OK')
+    res.status(200).send('index')
+})
+
+app.get('/about', middleware, (req, res) => {
+    res.status(200).send('about')
 })
