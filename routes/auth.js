@@ -1,7 +1,9 @@
 const express = require('express')
 const router = express.Router()
+const env = require('./../.env.local')
 const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 const User = mongoose.model('User')
 
 router.get('/', (req, res) => {
@@ -54,7 +56,9 @@ router.post('/signin', (req, res) => {
             bcrypt.compare(password, currentUser.password)
                 .then(isMatch => {
                     if (isMatch) {
-                        res.status(200).json({ message: 'You are logged in.' })
+                        // res.status(200).json({ message: 'You are logged in.' })
+                        const token = jwt.sign({ _id: currentUser._id }, env.SECRET)
+                        res.status(200).json({ message: 'You are logged in.', token })
                     } else {
                         return res.status(422).json({ error: 'Email or password incorrect!' })
                     }
