@@ -2,7 +2,10 @@ const express = require('express')
 const app = express()
 const PORT = 5000
 
-const middleware = () => console.log('middleware')
+const middleware = (req, res, next) => {
+    console.log('middleware')
+    next()
+}
 
 app.use(middleware)
 
