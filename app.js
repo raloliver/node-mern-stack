@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 const mongoose = require('mongoose')
 const env = require('./.env.local')
-const PORT = env.PORT || 5000
+const PORT = env.PORT
 
 /**
  * MODELS
@@ -18,29 +18,17 @@ mongoose.model("User")
 app.use(express.json())
 app.use(require('./routes/auth'))
 
+/**
+ * DATABASE
+ */
+
 mongoose.connect(env.mongoDB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 })
-
-mongoose.connection.on('connected', () => console.log('db is online'))
-mongoose.connection.on('error', (err) => console.error('error on db: ', err))
-
-const connectDB = async (operations, res) => {
-    try {
-
-        const db = connect.on('connected', () => {
-            console.log('connected on mongo atlas')
-        });
-
-        await operations(db);
-
-        connect.close();
-    } catch (error) {
-        res.status(500).send({ message: 'Error connection to database', error });
-    }
-};
+mongoose.connection.on('connected', () => console.log('Connected to Atlas...'))
+mongoose.connection.on('error', (err) => console.error('Error on Atlas: ', err))
 
 app.listen(PORT, () => {
-    console.warn('Server on 5000')
+    console.warn('Server on: ', PORT)
 })
