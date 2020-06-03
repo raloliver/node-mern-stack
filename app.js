@@ -3,9 +3,16 @@ const app = express()
 const mongoose = require('mongoose')
 const PORT = process.env.PORT | 5000
 
+/**
+ * MODELS
+ */
+
+require('./models/User')
+mongoose.model("User")
+
 const connectDB = async (operations, res) => {
     try {
-        const connect = await mongoose.connect(process.env.mongoDB_URI, { 
+        const connect = await mongoose.connect(process.env.mongoDB_URI, {
             useNewUrlParser: true,
             useUnifiedTopology: true
         })
