@@ -19,9 +19,9 @@ router.post('/signup', (req, res) => {
      * VERIFY ACCOUNT
      */
     User.findOne({ email: email })
-        .then((accountEmail) => {
-            if (accountEmail) {
-                res.status(422).json({ error: 'Email already used!' })
+        .then((currentUser) => {
+            if (currentUser) {
+                return res.status(422).json({ error: 'Email already used!' })
             }
 
             bcrypt.hash(password, 12)
@@ -38,6 +38,30 @@ router.post('/signup', (req, res) => {
 
         })
         .catch(err => console.errror(err))
+})
+
+router.post('/signin', (req, res) => {
+    const { email, password } = req.body
+
+    if (!email || !password) {
+        res.status(422).json({ error: 'Please, fill all fields!' })
+    }
+    User.findOne({ email: email })
+        .then(currentUser => {
+            if (!currentUser) {
+                return res.status(422).json({ error: 'Email or password incorrect!' })
+            }
+            bcrypt.compare(password, currentUser.password)
+                .then(isMatch => {
+                    if (isMatch) {
+                        res.status(200).json({ message: 'You are logged in.' })
+                    } else {
+                        return res.status(422).json({ error: 'Email or password incorrect!' })
+                    }
+                })
+                .catch(err => console.error(err))
+        })
+        .catch(err => console.error(err))
 })
 
 module.exports = router
